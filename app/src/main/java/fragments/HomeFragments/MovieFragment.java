@@ -38,7 +38,7 @@ public class MovieFragment extends BaseFragment {
     private String lastTime;
     private int curPage = 1;		// 当前页的编号，从0开始 CollectFragment
     private int Pages;
-    private int count=12;
+    private int count=60;
     public MovieFragment() {
     }
     @Override
@@ -77,31 +77,23 @@ public class MovieFragment extends BaseFragment {
      * @param actionType	ListView的操作类型（下拉刷新、上拉加载更多）
      */
     private void queryData(int page, final int actionType){
-        Pages=page;
-        startProgressDialog("加载中...");
-        BmobQuery<Movies> query = new BmobQuery<Movies>();
-        query.order("-createdAt");
-        // 如果是加载更多
+        BmobQuery<Movies> query = new BmobQuery<>();
+        query.setLimit(count);
         if(actionType == STATE_MORE){
             query.setSkip(page * count+1); // 跳过之前页数并去掉重复数据
         }else{
             page=0;
             query.setSkip(page);
         }
-        // 设置每页数据个数
-        query.setLimit(count);
-        // 查找数据
+        query.order("createdAt");
         query.findObjects(new FindListener<Movies>() {
             @Override
             public void done(List<Movies> list, BmobException e) {
                 if(e==null){
-                    stopProgressDialog();
                     if(list.size()>0){
                         if(actionType == STATE_REFRESH){
                             curPage = 0;
                             mDates.clear();
-                            // 获取最后时间
-                            lastTime = list.get(list.size()-1).getCreatedAt();
                         }
                         // 将本次查询的数据添加到bankCards中
                         for (Movies td : list) {
@@ -121,10 +113,57 @@ public class MovieFragment extends BaseFragment {
                         mList.setPullLoadMoreCompleted();
                     }
                 }else {
-                    Toast("获取数据失败，请稍后重试");
+                    Toast("数据获取失败");
+                    mList.setPullLoadMoreCompleted();
+                    Log.i("获取失败====",""+e.toString());
                 }
             }
         });
+//        Pages=page;
+//        startProgressDialog("加载中...");
+//        BmobQuery<Movies> query = new BmobQuery<Movies>();
+//        query.order("-createdAt");
+//        if(actionType == STATE_MORE){
+//            query.setSkip(page * count+1); // 跳过之前页数并去掉重复数据
+//        }else{
+//            page=0;
+//            query.setSkip(page);
+//        }
+//        query.setLimit(count);
+//        query.findObjects(new FindListener<Movies>() {
+//            @Override
+//            public void done(List<Movies> list, BmobException e) {
+//                if(e==null){
+//                    stopProgressDialog();
+//                    if(list.size()>0){
+//                        if(actionType == STATE_REFRESH){
+//                            curPage = 0;
+//                            mDates.clear();
+//                            lastTime = list.get(list.size()-1).getCreatedAt();
+//                        }
+//                        // 将本次查询的数据添加到bankCards中
+//                        for (Movies td : list) {
+//                            Log.i("获取Movie数据=====",""+list.toString());
+//                            mDates.add(td);
+//                            mList.setPullLoadMoreCompleted();
+//                            adapter.notifyDataSetChanged();
+//                        }
+//                        // 这里在每次加载完数据后，将当前页码+1，这样在上拉刷新的onPullUpToRefresh方法中就不需要操作curPage了
+//                        curPage++;
+////						showToast("第"+(Pages+1)+"页数据加载完成");
+//                    }else if(actionType == STATE_MORE){
+//                        Toast("没有更多数据了");
+//                        mList.setPullLoadMoreCompleted();
+//                    }else if(actionType == STATE_REFRESH){
+//                        Toast("没有数据");
+//                        mList.setPullLoadMoreCompleted();
+//                    }
+//                }else {
+//                    Toast("获取数据失败，请稍后重试");
+//                    mList.setPullLoadMoreCompleted();
+//                }
+//            }
+//        });
     }
     private void initview(View layout) {
         mList = (PullLoadMoreRecyclerView) layout.findViewById(R.id.list);

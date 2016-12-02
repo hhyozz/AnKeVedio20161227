@@ -17,6 +17,8 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import dialog.CustomProgressDialog;
+import fragments.BaseFragment;
+import io.rong.eventbus.EventBus;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
@@ -62,6 +64,7 @@ public class BaseActivity extends FragmentActivity {
 	}
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		initStatus();
 	}
 	private void initStatus() {
@@ -165,6 +168,5 @@ public class BaseActivity extends FragmentActivity {
 		}
 		return true;
 	}
-
 
 }

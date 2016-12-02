@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.anke.vedio.R;
 
@@ -20,6 +21,11 @@ import cn.bmob.v3.listener.SaveListener;
 import model.Collect;
 import model.ShortMovie;
 import vedio.FullScreenActivity;
+import com.bumptech.glide.request.target.*;
+import com.bumptech.glide.*;
+
+import vedio.VideoJJActivity;
+import views.FastBlurs;
 
 /**
  * Created by Administrator on 2016/11/6.
@@ -33,7 +39,8 @@ public class ShortMovieDeatilActivity extends BaseActivity {
     private ShortMovie shortMovie;
     private TextView mTvCollect;
     private TextView mTvPlay;
-
+    private ImageView mpoly_bg;//背面毛玻璃
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,10 +53,15 @@ public class ShortMovieDeatilActivity extends BaseActivity {
         mTvPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast("播放"+shortMovie.getMovie_720());
-                Intent intent=new Intent(getApplicationContext(), FullScreenActivity.class);
-                intent.putExtra("url",""+shortMovie.getMovie_720());
+                if(shortMovie.getMovie_720()==null||shortMovie.getMovie_720().equals(""))
+                {
+                    Toast.makeText(ShortMovieDeatilActivity.this, "无效的播放地址,请确认片源是否上传", Toast.LENGTH_LONG).show();
+                    return ;
+                }
+                Intent intent=new Intent(getApplicationContext(), VideoJJActivity.class);
+                intent.putExtra("url","" +shortMovie.getMovie_720());
                 startActivity(intent);
+
             }
         });
         /**
@@ -132,5 +144,14 @@ public class ShortMovieDeatilActivity extends BaseActivity {
         UILUtils.displayImageNoAnim(shortMovie.getImageUrl(),mImgIcon);
         mTvName.setText(shortMovie.getMoviename());
         mTvInfo.setText("剧情介绍s:"+shortMovie.getPlot());
+        mpoly_bg=(ImageView)findViewById(R.id.poly_bg);
+        /**
+         *毛玻璃背景,基于Glide的毛玻璃
+         */
+        Glide.with(this).load(shortMovie.getImageUrl()).asBitmap()
+            .transform(new FastBlurs(this, 200))//控制模糊的程度
+            //加载错误时显示的 .error(R.drawable.erro_icon)
+            .into(mpoly_bg);
+        
     }
 }

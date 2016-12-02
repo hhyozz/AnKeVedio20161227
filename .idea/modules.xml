@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/AnKeVedio.iml" filepath="$PROJECT_DIR$/AnKeVedio.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AnKeVedio_20161227.iml" filepath="$PROJECT_DIR$/AnKeVedio_20161227.iml" />
       <module fileurl="file://$PROJECT_DIR$/Rong_Cloud_Android_IMKit_SDK_v2_7_3_stable/Rong_Cloud_Android_IMKit_SDK_v2_7_3_stable.iml" filepath="$PROJECT_DIR$/Rong_Cloud_Android_IMKit_SDK_v2_7_3_stable/Rong_Cloud_Android_IMKit_SDK_v2_7_3_stable.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/videoJjlibrary/videoJjlibrary.iml" filepath="$PROJECT_DIR$/videoJjlibrary/videoJjlibrary.iml" />
     </modules>
   </component>
 </project>

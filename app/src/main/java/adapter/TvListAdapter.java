@@ -47,7 +47,7 @@ public class TvListAdapter extends BaseAdapter {
         }else {
             viewHold= (ViewHold) convertView.getTag();
         }
-        viewHold.TvNum.setText(""+(position+1));
+        viewHold.TvNum.setText(""+(mDate.size()-position));
         return convertView;
     }
     class ViewHold{

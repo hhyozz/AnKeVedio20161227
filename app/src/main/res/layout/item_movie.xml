@@ -5,6 +5,9 @@
     android:layout_height="150dp">
   <ImageView
       android:id="@+id/img_icon"
+      android:layout_marginTop="1.5dp"
+      android:layout_marginRight="1.5dp"
+
       android:layout_width="match_parent"
       android:scaleType="centerCrop"
       android:layout_height="150dp" />

@@ -5,20 +5,37 @@ android {
     defaultConfig {
         applicationId "com.anke.vedio"
         minSdkVersion 15
-        targetSdkVersion 24
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test..runnerAndroidJUnitRunner"
     }
+
+    packagingOptions {
+        exclude 'META-INF/NOTICE' // will not include NOTICE file
+        exclude 'META-INF/LICENSE' // will not include LICENSE file
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions{
+        exclude 'META-INF/NOTICE' // will not include NOTICE file
+        exclude 'META-INF/LICENSE' // will not include LICENSE file
+        // as noted by @Vishnuvathsan you may also need to include
+        // variations on the file name. It depends on your dependencies.
+        // Some other common variations on notice and license file names
+        exclude 'META-INF/notice'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license'
+        exclude 'META-INF/license.txt'
+    }
 }
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -43,5 +60,7 @@ dependencies {
     compile files('libs/tbs_sdk_thirdapp_v2.4.0.1073_36840_sharewithdownload_withoutGame_obfs_20161011_194834.jar')
     compile files('libs/BmobSMS_V1.2.0_20161110.jar')
     //    compile 'cn.bmob.android:bmob-sdk:3.5.3'
-    compile files('libs/BmobSDK_3.5.1_20160719.jar')
+    compile files('libs/BmobSDK_3.5.3_20161109.jar')
+    compile 'org.greenrobot:eventbus:3.0.0'
+    compile project(':videoJjlibrary')
 }

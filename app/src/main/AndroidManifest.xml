@@ -126,6 +126,13 @@
             android:value="qd46yzrf4yyaf" />
         <!-- 视频播放器 -->
         <activity
+            android:name="vedio.VideoJJActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:screenOrientation="portrait" >
+        </activity>
+
+
+        <activity
             android:name="com.tencent.smtt.sdk.VideoActivity"
             android:alwaysRetainTaskState="true"
             android:configChanges="orientation|screenSize|keyboardHidden"

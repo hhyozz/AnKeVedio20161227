@@ -9,7 +9,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -19,6 +23,7 @@ import com.anke.vedio.R;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -49,6 +54,7 @@ import utis.utis;
 public class MainActivity extends BaseActivity implements View.OnClickListener{
     long waitTime = 2000;
     long touchTime = 0;
+    /*
     private ImageView mImgMenu;
     private ImageView mImgSearch;
     private ImageView mImgDownload;
@@ -57,6 +63,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     private TextView mTvSearchCancle;
     private RelativeLayout mRtlSearch;
     private RelativeLayout mRtlMainMenu;
+    */
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -73,9 +80,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         String Nonce = (r.nextInt(10000) + 10000) + "";
         final String Timestamp = (System.currentTimeMillis() / 1000) + "";
         HashMap<String,String> map=new HashMap<>();
-        map.put("userId",utis.GetId(getApplicationContext()));
-        map.put("name",utis.GetUser(getApplicationContext()));
-        map.put("portraitUri","head");
+        map.put("userId", utis.GetId(getApplicationContext()));
+        map.put("name", utis.GetUser(getApplicationContext()));
+        map.put("portraitUri", "head");
         OkHttpUtils
                 .post()//
                 .url("https://api.cn.ronghub.com/user/getToken.json")//
@@ -89,21 +96,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                     @Override
                     public void onError(Call call, Exception e) {
                     }
+
                     @Override
                     public void onResponse(String response) {
-                        Log.i("获取TOken返回值========",""+response.toString());
-                            TokenMod tokenMod = GsonUtils.parseJSON(response, TokenMod.class);
-                        if(tokenMod==null){
+                        Log.i("获取TOken返回值========", "" + response.toString());
+                        TokenMod tokenMod = GsonUtils.parseJSON(response, TokenMod.class);
+                        if (tokenMod == null) {
                             Toast("数据获取失败");
                             return;
                         }
-                            if(tokenMod.getCode().equals("200")){
-                                connect(tokenMod.getToken());
-                                SharedPreferences.Editor edit = DemoContext.getInstance().getSharedPreferences().edit();
-                                edit.putString("DEMO_TOKEN", tokenMod.getToken());
-                                edit.apply();
-                                Log.e("获取成功","success");
-                             }
+                        if (tokenMod.getCode().equals("200")) {
+                            connect(tokenMod.getToken());
+                            SharedPreferences.Editor edit = DemoContext.getInstance().getSharedPreferences().edit();
+                            edit.putString("DEMO_TOKEN", tokenMod.getToken());
+                            edit.apply();
+                            Log.e("获取成功", "success");
+                        }
                     }
                 });
     }
@@ -127,9 +135,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                     Log.d("连接聊天服务器成功", "--onSuccess" + userid);
                 }
                 /**
-                 * 连接融云失败
                  * @param errorCode 错误码，可到官网 查看错误码对应的注释
-                 *                  http://www.rongcloud.cn/docs/android.html#常见错误码
                  */
                 @Override
                 public void onError(RongIMClient.ErrorCode errorCode) {
@@ -191,17 +197,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                     }
                 });
     }
-
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+
+    //设置头像
     private void inidate() {
+        /*
        if(utis.GetImgHeadUrl(getApplicationContext())==null){
           mImgHead.setBackground(getResources().getDrawable(R.mipmap.ic_launcher));
        }else {
            UILUtils.displayImageNoAnim(utis.GetImgHeadUrl(getApplicationContext()),mImgHead);
        }
+       */
     }
 
     private void initview() {
+        /*
         mTvSearchCancle = (TextView) findViewById(R.id.tv_search_cancle);
         mRtlSearch = (RelativeLayout) findViewById(R.id.rtl_search);
         mRtlMainMenu = (RelativeLayout) findViewById(R.id.rtl_main_menus);
@@ -215,6 +225,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         mImgHistory.setOnClickListener(this);
         mImgDownload.setOnClickListener(this);
         mTvSearchCancle.setOnClickListener(this);
+        */
         FragmentManager fm =getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.add(R.id.fl_main,new HomeFragment());
@@ -239,6 +250,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         FragmentManager fm =getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         switch (v.getId()){
+            /*
             case R.id.img_menu://侧滑菜单
                 Menues(v);
                 break;
@@ -258,6 +270,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 mRtlMainMenu.setVisibility(View.VISIBLE);
                 ft.replace(R.id.fl_main,new HomeFragment());
                 break;
+            */
+            default:break;
         }
         ft.commit();
     }
@@ -270,32 +284,32 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         mainPopMenu.setOnSelectOnclickListner(new MainPopMenu.OnSelecListner() {
             @Override
             public void onSelect(String Type) {
-                FragmentManager fm =getSupportFragmentManager();
+                FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
-                switch (Type){
+                switch (Type) {
                     case "look":
-                        ft.replace(R.id.fl_main,new LookFragment());
+                        ft.replace(R.id.fl_main, new LookFragment());
                         break;
                     case "home":
-                        ft.replace(R.id.fl_main,new HomeFragment());
+                        ft.replace(R.id.fl_main, new HomeFragment());
                         break;
                     case "collect":
-                        ft.replace(R.id.fl_main,new CollectFragment());
+                        ft.replace(R.id.fl_main, new CollectFragment());
                         break;
                     case "recomand":
-                        Intent intent_tj=new Intent(MainActivity.this,RecomandActivity.class);
+                        Intent intent_tj = new Intent(MainActivity.this, RecomandActivity.class);
                         startActivity(intent_tj);
                         break;
                     case "request":
-                        ft.replace(R.id.fl_main,new ReQuestFragment());
+                        ft.replace(R.id.fl_main, new ReQuestFragment());
                         break;
                     case "update":
-                        Intent intent=new Intent(MainActivity.this,UpdateUserHeadActivity.class);
-                        startActivityForResult(intent,11);
+                        Intent intent = new Intent(MainActivity.this, UpdateUserHeadActivity.class);
+                        startActivityForResult(intent, 11);
                         break;
                     case "loginout":
-                        SharePre.saveLoginState(MainActivity.this,false);
-                        Intent intent_loginout=new Intent(MainActivity.this,LoginActivity.class);
+                        SharePre.saveLoginState(MainActivity.this, false);
+                        Intent intent_loginout = new Intent(MainActivity.this, LoginActivity.class);
                         startActivity(intent_loginout);
                         finish();
                         break;
@@ -312,5 +326,31 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         if(resultCode==1){
             inidate();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
+    private ArrayList<MyOnTouchListener> onTouchListeners = new ArrayList<MyOnTouchListener>(10);
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        for (MyOnTouchListener listener : onTouchListeners) {
+            listener.dispatchTouchEvent(ev);
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    public void registerMyOnTouchListener(MyOnTouchListener myOnTouchListener) {
+        onTouchListeners.add(myOnTouchListener);
+    }
+
+    public void unregisterMyOnTouchListener(MyOnTouchListener myOnTouchListener) {
+        onTouchListeners.remove(myOnTouchListener);
+    }
+
+    public interface MyOnTouchListener {
+        public boolean dispatchTouchEvent(MotionEvent ev);
     }
 }

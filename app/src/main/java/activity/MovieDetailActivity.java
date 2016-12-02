@@ -1,6 +1,9 @@
 package activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -29,6 +32,9 @@ import model.Collect;
 import model.Movies;
 import model.history;
 import vedio.FullScreenActivity;
+import vedio.VideoJJActivity;
+import com.bumptech.glide.*;
+import views.FastBlurs;
 
 /**
  * Created by Administrator on 2016/11/1.
@@ -48,7 +54,8 @@ public class MovieDetailActivity extends BaseActivity {
     private TextView mTvXz;
     private TextView mTvCollect;
     private TextView mTvPlay;
-
+    private ImageView mpoly_bg;//背面毛玻璃
+    private TextView mtitle;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,20 +73,32 @@ public class MovieDetailActivity extends BaseActivity {
     }
 
     private void initview() {
+        mtitle=(TextView)findViewById(R.id.title);
         mTvPlay = (TextView) findViewById(R.id.tv_play);
         mTvCollect = (TextView) findViewById(R.id.tv_collect);
         mTvXz = (TextView) findViewById(R.id.tv_xz);
         mLlDownload = (LinearLayout) findViewById(R.id.ll_download);
         mTvDownLoad = (TextView) findViewById(R.id.tv_download);
         mImgCloseDownload = (ImageView) findViewById(R.id.img_close_download);
-
+        mpoly_bg=(ImageView)findViewById(R.id.poly_bg);
         mTvInfo = (TextView) findViewById(R.id.tv_info);
         mTvPlot = (TextView) findViewById(R.id.tv_plot);
         mImgIcon = (ImageView) findViewById(R.id.img_icon);
         movie = (Movies) getIntent().getSerializableExtra("data");
         UILUtils.displayImageNoAnim(movie.getImageUrl(), mImgIcon);
+        mtitle.setText(""+movie.getMoviename());
         mTvPlot.setText("" + movie.getPlot());
         mTvInfo.setText("" + movie.getMovieInfo());
+    
+    /**
+     *毛玻璃背景,基于Glide的毛玻璃
+     */
+        Glide.with(this).load(movie.getImageUrl()).asBitmap()
+                .transform(new FastBlurs(this, 200))//控制模糊的程度
+                        //加载错误时显示的 .error(R.drawable.erro_icon)
+                .into(mpoly_bg);
+        
+    
     }
 
     /**
@@ -141,8 +160,13 @@ public class MovieDetailActivity extends BaseActivity {
         mTvPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getApplicationContext(), FullScreenActivity.class);
-                intent.putExtra("url",""+movie.getMovie_1080());
+                if(movie.getMovie_720()==null||movie.getMovie_720().equals(""))
+                {
+                    Toast.makeText(MovieDetailActivity.this,"无效的播放地址,请确认片源是否上传",Toast.LENGTH_LONG).show();
+                    return ;
+                }
+                Intent intent=new Intent(getApplicationContext(), VideoJJActivity.class);
+                intent.putExtra("url","" +movie.getMovie_720());
                 startActivity(intent);
             }
         });

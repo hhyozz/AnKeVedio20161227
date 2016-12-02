@@ -14,9 +14,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.anke.vedio.R;
-
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,7 +22,10 @@ import java.util.Date;
 import java.util.Locale;
 
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.UpdateListener;
+import model.MyUser;
 import utis.ImageUtils;
+import utis.utis;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.listener.UploadFileListener;
 
@@ -80,7 +81,7 @@ public class UpdateUserHeadActivity extends BaseActivity {
         mTvTakePhotos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                TakePhotos();
+                TakePhotos();
             }
         });
         /**
@@ -100,48 +101,32 @@ public class UpdateUserHeadActivity extends BaseActivity {
                     bmobFile.uploadblock(new UploadFileListener() {
                         @Override
                         public void done(BmobException e) {
+                            stopProgressDialog();
                              if(e==null){
-                                 stopProgressDialog();
-                            Log.i("上传后的地址=====",""+bmobFile.getFileUrl());
+                                 final String ImgHeadUrl = bmobFile.getFileUrl();
+                                 startProgressDialog("信息更新中...");
+                                 MyUser myUser = new MyUser();
+                                 myUser.setNIckName(mEtNickName.getText().toString().trim());
+                                 myUser.setImageHead(ImgHeadUrl);
+                                 myUser.update(utis.GetId(getApplicationContext()),new UpdateListener() {
+                                     @Override
+                                     public void done(BmobException e) {
+                                         stopProgressDialog();
+                                         if(e==null){
+                                             utis.saveImgHeadUrl(getApplicationContext(),ImgHeadUrl);
+                                   Toast("更新成功");
+                                    setResult(1);
+                                    finish();
+                                         }else {
+                                             Toast("数据连接失败，请稍后重试");
+                                         }
+                                     }
+                                 });
                              } else {
-                                 Toast("上传失败"+e.toString());
-
+                                 Toast("上传失败");
                              }
                         }
-                    })      ;
-//                    startProgressDialog("上传中");
-//                    final BmobFile bmobFile = new BmobFile(new File(mPhotos.get(0)));
-//                    bmobFile.uploadblock(getApplicationContext(), new UploadFileListener() {
-//                        @Override
-//                        public void onSuccess() {
-//                            stopProgressDialog();
-//                            final String ImgHeadUrl = bmobFile.getFileUrl(UpdateUserHeadActivity.this);
-//                            Log.i("上传的头像--------","ture");
-////                            MyUser myUser = new MyUser();
-////                            myUser.setNIckName(mEtNickName.getText().toString().trim());
-////                            myUser.setImageHead(ImgHeadUrl);
-////                            myUser.update(getApplicationContext(),utis.GetId(getApplicationContext()), new UpdateListener() {
-////                                @Override
-////                                public void onSuccess() {
-////                                    stopProgressDialog();
-////                                    utis.saveImgHeadUrl(getApplicationContext(),ImgHeadUrl);
-////                                   Toast("更新成功");
-////                                    setResult(1);
-////                                    finish();
-////                                }
-////                                @Override
-////                                public void onFailure(int i, String s) {
-////                                    Toast(""+s.toString());
-////                                    stopProgressDialog();
-////                                }
-////                            });
-//                        }
-//                            @Override
-//                        public void onFailure(int i, String s) {
-//                                Toast(s.toString()+"上传头像失败");
-//                                stopProgressDialog();
-//                        }
-//                    });
+                    });
                 }
             }
         });
@@ -164,7 +149,7 @@ public class UpdateUserHeadActivity extends BaseActivity {
             ContentValues values = new ContentValues();
             values.put(MediaStore.Video.Media.TITLE, filename);
             imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-//            tempFile = createTakePhote();
+            tempFile = createTakePhote();
             imageUri = Uri.fromFile(tempFile);
             openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
             startActivityForResult(openCameraIntent, TAKE_PICTURE);
@@ -177,14 +162,14 @@ public class UpdateUserHeadActivity extends BaseActivity {
      * @return
      */
     private static SimpleDateFormat fileDateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
-//    public final  String FILE_SAVE_PATH = getBaseFolder() + "/AnKeMovie/";
-//    public File createTakePhote() {
-//        File file = new File(FILE_SAVE_PATH + formatTimeForFile(new Date()) + takePhotoPostfix);
-//        if( !file.getParentFile().exists() ) {
-//            file.getParentFile().mkdirs();
-//        }
-//        return new File(FILE_SAVE_PATH + formatTimeForFile(new Date()) + takePhotoPostfix);
-//    }
+    public final  String FILE_SAVE_PATH = getAppFolder() ;
+    public File createTakePhote() {
+        File file = new File(FILE_SAVE_PATH + formatTimeForFile(new Date()) + takePhotoPostfix);
+        if( !file.getParentFile().exists() ) {
+            file.getParentFile().mkdirs();
+        }
+        return new File(FILE_SAVE_PATH + formatTimeForFile(new Date()) + takePhotoPostfix);
+    }
     /**
      * 用于文件存储的格式,yyyyMMdd_HHmmss
      * @param date
@@ -201,7 +186,7 @@ public class UpdateUserHeadActivity extends BaseActivity {
                 mRtlHead.setVisibility(View.VISIBLE);
                 mPhotos.clear();
                 mPhotos.add(tempFile.getAbsolutePath());
-                Toast.makeText(UpdateUserHeadActivity.this, "图片个数"+mPhotos.size(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(UpdateUserHeadActivity.this, "图片个数"+mPhotos.size(), Toast.LENGTH_SHORT).show();
                 ImageUtils.displayLocalImage(mPhotos.get(0),mImgHead);
             }
             else{
@@ -223,7 +208,6 @@ public class UpdateUserHeadActivity extends BaseActivity {
                     mPhotos.clear();
                     mPhotos.add(fPath);
 //                    fileName.add(imgName);
-                    Toast.makeText(UpdateUserHeadActivity.this, "图片个数"+mPhotos.size(), Toast.LENGTH_SHORT).show();
                     ImageUtils.displayLocalImage(mPhotos.get(0),mImgHead);
                 }
             }
@@ -239,20 +223,20 @@ public class UpdateUserHeadActivity extends BaseActivity {
         return path;
     }
 
-    private static File baseFolder;
-//    public String getBaseFolder() {
-////		return Environment.getExternalStorageDirectory() + "/" + getInstance().getString(R.string.app_folder);
-//        if( baseFolder != null ) {
-//            return baseFolder.getAbsolutePath();
-//        }
-//        File file = getExternalFilesDir(null);
-//        if( file == null ) {
-//            file = getFilesDir();
-//        }
-//        if(!file.exists()) {
-//            file.mkdirs();
-//        }
-//        baseFolder = file;
-//        return file.getAbsolutePath();
-//    }
+    /**
+     * 返回app文件夹，在内存卡的一级目录下，以该应用名称建立的文件夹
+     */
+    public static String getAppFolder() {
+        boolean sdCardExist = Environment.getExternalStorageState()
+                .equals(android.os.Environment.MEDIA_MOUNTED);//判断sd卡是否存在
+        if(sdCardExist)
+        {
+            String path = Environment.getExternalStorageDirectory() + "/" +"安可影音" + "/";
+            File f = new File(path);
+            if(!f.exists()) f.mkdir();
+            return  path;
+        }else {
+            return  null;
+        }
+    }
 }

@@ -1,4 +1,5 @@
 package activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -7,6 +8,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.anke.vedio.R;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +25,10 @@ import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
 import model.TvPlay;
 import model.look;
+import com.bumptech.glide.*;
+
+import vedio.VideoJJActivity;
+import views.FastBlurs;
 
 /**
  * Created by Administrator on 2016/11/6.
@@ -40,6 +47,8 @@ public class TvPlayDetailActivity extends  BaseActivity {
     private GridView mGdList;
     private TvListAdapter tvListAdapter;
     private TextView mTvLook;
+    private ImageView mpoly_bg;//背面毛玻璃
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,9 +123,9 @@ public class TvPlayDetailActivity extends  BaseActivity {
     }
 
     private void initgdlist() {
-        if(!tvplay.getMovie_1080().equals("")){
+        if(!tvplay.getMovie_720().equals("")){
             mList.clear();
-            mList=Util.StingToImg(tvplay.getMovie_1080());
+            mList=Util.StingToImg(tvplay.getMovie_720());
             Log.i("视频地址的Url",""+mList.toString());
         }
         tvListAdapter = new TvListAdapter(getApplicationContext(), mList);
@@ -124,11 +133,20 @@ public class TvPlayDetailActivity extends  BaseActivity {
         mGdList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast("点击"+position);
+                String url = mList.get(mList.size()-1-position);
+                if(url==null||url.equals(""))
+                {
+                    Toast.makeText(TvPlayDetailActivity.this, "无效的播放地址,请确认片源是否上传", Toast.LENGTH_LONG).show();
+                    return ;
+                }
+                Intent intent=new Intent(getApplicationContext(), VideoJJActivity.class);
+                intent.putExtra("url", "" +url);
+                startActivity(intent);
             }
         });
     }
     private void initview() {
+        mpoly_bg=(ImageView)findViewById(R.id.poly_bg);
         mGdList = (GridView) findViewById(R.id.gv_list);
         mTvCollect = (TextView) findViewById(R.id.tv_collect);
         mTvXz = (TextView) findViewById(R.id.tv_xz);
@@ -143,5 +161,13 @@ public class TvPlayDetailActivity extends  BaseActivity {
         mTvPlot.setText("剧情介绍:" + tvplay.getPlot());
         mTvInfo.setText("" + tvplay.getMovieInfo());
         mTvLook = (TextView) findViewById(R.id.tv_look);
+        /**
+         *毛玻璃背景,基于Glide的毛玻璃
+         */
+        Glide.with(this).load(tvplay.getImageUrl()).asBitmap()
+            .transform(new FastBlurs(this, 200))//控制模糊的程度
+            //加载错误时显示的 .error(R.drawable.erro_icon)
+            .into(mpoly_bg);
+        
     }
 }

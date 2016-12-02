@@ -29,8 +29,7 @@ import utis.SharePre;
 import utis.utis;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.listener.SaveListener;
-import io.rong.imkit.RongIM;
-import io.rong.imlib.RongIMClient;
+
 import model.MyUser;
 import okhttp.OkHttpUtils;
 import okhttp.callback.StringCallback;
@@ -43,7 +42,7 @@ import okhttp3.Call;
 public class LoginActivity extends BaseActivity {
     private EditText mEtPhone;
     private EditText mEtPassowrd;
-    private RelativeLayout mRtlLogin;
+    private RelativeLayout  mRtlLogin;
     private RelativeLayout mRtlRegist;
     private TextView mTvFindPassword;
     private static final String RY_APP_KEY = "qd46yzrf4yyaf";
@@ -164,7 +163,7 @@ public class LoginActivity extends BaseActivity {
                         Log.i("获取TOken返回值========",""+response.toString());
                         TokenMod tokenMod = GsonUtils.parseJSON(response, TokenMod.class);
                         if(tokenMod.getCode().equals("200")){
-                            connect(tokenMod.getToken());
+                          //  connect(tokenMod.getToken());
                             SharedPreferences.Editor edit = DemoContext.getInstance().getSharedPreferences().edit();
                             edit.putString("DEMO_TOKEN", tokenMod.getToken());
                             edit.apply();
@@ -175,10 +174,10 @@ public class LoginActivity extends BaseActivity {
     /**
      * 建立与融云服务器的连接
      * @param token
-     */
+     *
     private void connect(String token) {
         if (getApplicationInfo().packageName.equals(BaseApp.getCurProcessName(getApplicationContext()))) {
-            RongIM.connect(token, new RongIMClient.ConnectCallback() {
+          //  RongIM.connect(token, new RongIMClient.ConnectCallback() {
                 @Override
                 public void onTokenIncorrect() {
                     Log.d("LoginActivity", "--onTokenIncorrect");
@@ -186,7 +185,7 @@ public class LoginActivity extends BaseActivity {
                 /**
                  * 连接融云成功
                  * @param userid 当前 token
-                 */
+                 *
                 @Override
                 public void onSuccess(String userid) {
                     Log.d("LoginActivity", "--onSuccess" + userid);
@@ -197,14 +196,14 @@ public class LoginActivity extends BaseActivity {
                  * 连接融云失败
                  * @param errorCode 错误码，可到官网 查看错误码对应的注释
                  *                  http://www.rongcloud.cn/docs/android.html#常见错误码
-                 */
+                 *
                 @Override
                 public void onError(RongIMClient.ErrorCode errorCode) {
                     Log.d("连接聊天融云失败------", "--onError" + errorCode);
                 }
             });
         }
-    }
+    }*/
     private void initview() {
         mEtPhone = (EditText) findViewById(R.id.et_phone);
         mEtPassowrd = (EditText) findViewById(R.id.et_password);
