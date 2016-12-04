@@ -39,7 +39,7 @@ import okio.Buffer;
 public class BaseApp extends Application {
 	/**
 	 */
-	public static String APPID = "6e33c5d8aa716849ba1e3fe944fa628d";
+	public static String APPID = "6e33c5d8aa716849ba1e3fe944fa628d";   //Test
 	private String CER_12306 = "-----BEGIN CERTIFICATE-----\n" +
             "MIICmjCCAgOgAwIBAgIIbyZr5/jKH6QwDQYJKoZIhvcNAQEFBQAwRzELMAkGA1UEBhMCQ04xKTAn\n" +
             "BgNVBAoTIFNpbm9yYWlsIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MQ0wCwYDVQQDEwRTUkNBMB4X\n" +
