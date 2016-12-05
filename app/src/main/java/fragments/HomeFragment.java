@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.anke.vedio.R;
 
@@ -30,6 +31,7 @@ import activity.MainActivity;
 import activity.RecomandActivity;
 import activity.UpdateUserHeadActivity;
 import dialog.MainPopMenu;
+import dialog.MovieSelectTypePop;
 import fragments.HomeFragments.ChatRoomFragment;
 import fragments.HomeFragments.MovieFragment;
 import fragments.HomeFragments.SearchFragment;
@@ -37,7 +39,7 @@ import fragments.HomeFragments.ShortMovieFragment;
 import fragments.HomeFragments.TvPalyFragment;
 import utis.SharePre;
 
-public class HomeFragment extends Fragment  implements Animator.AnimatorListener , View.OnClickListener {
+public class HomeFragment extends BaseFragment  implements Animator.AnimatorListener , View.OnClickListener {
     private ArrayList<String> mDate=new ArrayList<>();
     private Handler mHandler = new Handler();
     private ViewPager viewPager;
@@ -48,7 +50,6 @@ public class HomeFragment extends Fragment  implements Animator.AnimatorListener
     private ArrayList<Fragment> mFragments;
     private FragmentPagerAdapter mAdapter;
     private int Page=10000;
-
     private ImageView mImgMenu;
     private ImageView mImgSearch;
     private ImageView mImgDownload;
@@ -66,6 +67,9 @@ public class HomeFragment extends Fragment  implements Animator.AnimatorListener
     private boolean mIsAnim = false;
     private float lastX = 0;
     private float lastY = 0;
+    private ImageView mImgSelect;
+    private int Pos=0;
+
     public HomeFragment() {
         super();
     }
@@ -78,8 +82,6 @@ public class HomeFragment extends Fragment  implements Animator.AnimatorListener
         initevent();
         return layout;
     }
-
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -87,9 +89,15 @@ public class HomeFragment extends Fragment  implements Animator.AnimatorListener
         mSearchlayout = getActivity().findViewById(R.id.search_layout);
         initListener();
     }
-
     private void initevent() {
-
+        mImgSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast("第"+Pos+"页");
+                MovieSelectTypePop movieSelectTypePop = new MovieSelectTypePop(getActivity());
+                movieSelectTypePop.showAtLocation(v, Gravity.BOTTOM, 0, 0);
+            }
+        });
     }
     /**
      * viewpage
@@ -134,6 +142,7 @@ public class HomeFragment extends Fragment  implements Animator.AnimatorListener
             @Override
             public void onPageSelected(int position) {
                 Log.i("滑动页面的position",""+position);
+                Pos=position;
                 if(position>4){
                     viewPager.setCurrentItem(0);
                 }
@@ -148,7 +157,7 @@ public class HomeFragment extends Fragment  implements Animator.AnimatorListener
 
     private void initview(View layout) {
         viewPager = (ViewPager) layout.findViewById(R.id.viewpage);
-
+        mImgSelect = (ImageView) layout.findViewById(R.id.img_select);
 
         mTvSearchCancle = (TextView) layout.findViewById(R.id.tv_search_cancle);
         //mRtlSearch = (RelativeLayout) layout.findViewById(R.id.rtl_search);
@@ -247,27 +256,20 @@ public class HomeFragment extends Fragment  implements Animator.AnimatorListener
         }
         mIsAnim = false;
     }
-
-
     @Override
     public void onAnimationRepeat(Animator arg0) {
 
     }
-
-
     @Override
     public void onAnimationStart(Animator arg0) {
 
     }
-
-
     public void setMarginTop(int page){
         RelativeLayout.LayoutParams layoutParam = new RelativeLayout.LayoutParams( RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT);
         layoutParam.setMargins(0, page, 0, 0);
         viewPager.setLayoutParams(layoutParam);
         viewPager.invalidate();
     }
-
     @Override
     public void onClick(View v) {
        // FragmentManager fm =getSupportFragmentManager();

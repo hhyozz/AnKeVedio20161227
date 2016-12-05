@@ -10,21 +10,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.anke.vedio.R;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.List;
-
 import cn.bmob.v3.exception.BmobException;
 import fragments.BaseFragment;
 import activity.MovieDetailActivity;
 import adapter.MovieAdapter;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.listener.FindListener;
+import model.MovieType;
 import model.Movies;
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -39,6 +40,8 @@ public class MovieFragment extends BaseFragment {
     private int curPage = 1;		// 当前页的编号，从0开始 CollectFragment
     private int Pages;
     private int count=60;
+    private MovieType movieTypeDate;
+
     public MovieFragment() {
     }
     @Override
@@ -46,9 +49,20 @@ public class MovieFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         View layout=inflater.inflate(R.layout.fragment_movie,null);
         initview(layout);
-        queryData(0, STATE_REFRESH);
+        queryData(0, STATE_REFRESH,false);
         initevent();
+        EventBus.getDefault().register(this);
         return layout;
+    }
+    @Subscribe
+    public void onEvent(MovieType movieTypeDate) {
+        this.movieTypeDate = movieTypeDate;
+        queryData(0, STATE_REFRESH,true);
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
     private void initevent() {
         adapter.setOnItemClickListener(new MovieAdapter.OnRecyclerViewItemClickListener() {
@@ -76,8 +90,22 @@ public class MovieFragment extends BaseFragment {
      * @param page	页码
      * @param actionType	ListView的操作类型（下拉刷新、上拉加载更多）
      */
-    private void queryData(int page, final int actionType){
+    private void queryData(int page, final int actionType,boolean IsSelect){
         BmobQuery<Movies> query = new BmobQuery<>();
+        if(IsSelect){
+          if(!movieTypeDate.getMovieScore().equals("")){
+              query.addWhereContains("score",""+movieTypeDate.getMovieScore());
+          }
+            if(!movieTypeDate.getMovieAddress().equals("")){
+                query.addWhereContains("MovieInfo",""+movieTypeDate.getMovieScore());
+            }
+            if(!movieTypeDate.getMovieType().equals("")){
+                query.addWhereContains("MovieInfo",""+movieTypeDate.getMovieType());
+            }
+            if(!movieTypeDate.getMovieYear().equals("")){
+                query.addWhereContains("MovieInfo",""+movieTypeDate.getMovieYear());
+            }
+        }
         query.setLimit(count);
         if(actionType == STATE_MORE){
             query.setSkip(page * count+1); // 跳过之前页数并去掉重复数据
@@ -109,6 +137,8 @@ public class MovieFragment extends BaseFragment {
                         Toast("没有更多数据了");
                         mList.setPullLoadMoreCompleted();
                     }else if(actionType == STATE_REFRESH){
+                        mDates.clear();
+                        adapter.notifyDataSetChanged();
                         Toast("没有数据");
                         mList.setPullLoadMoreCompleted();
                     }
@@ -185,7 +215,7 @@ public class MovieFragment extends BaseFragment {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    queryData(0, STATE_REFRESH);
+                    queryData(0, STATE_REFRESH,false);
                 }
             });
         }
@@ -196,7 +226,7 @@ public class MovieFragment extends BaseFragment {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    queryData(curPage, STATE_MORE);
+                    queryData(curPage, STATE_MORE,false);
                 }
             });
         }

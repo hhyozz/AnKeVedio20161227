@@ -5,9 +5,17 @@
     android:background="@color/maincolor"
     android:layout_height="match_parent"
     tools:context="fragments.HomeFragment">
-    <com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
-        android:id="@+id/list"
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        ></com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView>
+        android:layout_height="match_parent">
+
+        <com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            ></com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView>
+
+    </FrameLayout>
+
 </LinearLayout>

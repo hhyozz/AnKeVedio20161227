@@ -65,13 +65,9 @@ public class MovieDetailActivity extends BaseActivity {
         initevent();
 //        inithistorymovie();
     }
-
-
-
     private void initdate() {
         movie = (Movies) getIntent().getSerializableExtra("data");
     }
-
     private void initview() {
         mtitle=(TextView)findViewById(R.id.title);
         mTvPlay = (TextView) findViewById(R.id.tv_play);
@@ -89,7 +85,6 @@ public class MovieDetailActivity extends BaseActivity {
         mtitle.setText(""+movie.getMoviename());
         mTvPlot.setText("" + movie.getPlot());
         mTvInfo.setText("" + movie.getMovieInfo());
-    
     /**
      *毛玻璃背景,基于Glide的毛玻璃
      */
@@ -97,10 +92,7 @@ public class MovieDetailActivity extends BaseActivity {
                 .transform(new FastBlurs(this, 200))//控制模糊的程度
                         //加载错误时显示的 .error(R.drawable.erro_icon)
                 .into(mpoly_bg);
-        
-    
     }
-
     /**
      * 添加播放记录
      */
