@@ -56,7 +56,7 @@ public class HomeFragment extends BaseFragment  implements Animator.AnimatorList
     private ImageView mImgHistory;
     private ImageView mImgHead;
     private TextView mTvSearchCancle;
-   // private RelativeLayout mRtlSearch;
+   // private RelativeLayout mRtlSearch;   sdf
     private RelativeLayout mRtlMainMenu;
 
 
