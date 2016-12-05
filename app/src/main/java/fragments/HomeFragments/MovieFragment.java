@@ -86,7 +86,7 @@ public class MovieFragment extends BaseFragment {
         });
     }
     /**
-     * 分页获取数据
+     * 分页获取数据asdsad  a
      * @param page	页码
      * @param actionType	ListView的操作类型（下拉刷新、上拉加载更多）
      */
